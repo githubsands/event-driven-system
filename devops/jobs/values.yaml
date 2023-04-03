@@ -1,0 +1,3 @@
+postgres_string:
+postgres_uri: postgres.demo.svc.cluster.local
+etcd_uri: etcd.demo.svc.cluster.local

@@ -1,0 +1,4 @@
+postgres_uri: "pgsql-postgresql.demo.svc.cluster.local:5432"
+postgres_string: "postgres://user:password@pgsql-postgresql.demo.svc.cluster.local:5432/database?sslmode=disable"
+kafka_uri: "kafka.demo.svc.cluster.local:31092"
+batchSize: "500"

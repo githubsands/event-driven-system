@@ -1,0 +1,21 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: command-hub
+  labels:
+    app: command-hub
+    commander: "true"
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: command
+  template:
+    metadata:
+      labels:
+        app: command
+    spec:
+      containers:
+      - name: command-hub
+        image: command-unit:latest
+        imagePullPolicy: IfNotPresent

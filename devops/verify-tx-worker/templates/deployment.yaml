@@ -1,0 +1,36 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: verify-tx-worker
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: verify-tx-worker
+  template:
+    metadata:
+      labels:
+        app: verify-tx-worker
+    spec:
+      containers:
+      - name: verify-tx-worker
+        image: verify-tx-worker:latest
+        env:
+        - name: KAFKA_URI
+          value: {{ .Values.kafka_uri }}
+        ports:
+        - containerPort: 8080
+        imagePullPolicy: Never
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: verify-tx-worker
+spec:
+  selector:
+    app: verify-tx-worker
+  ports:
+    - protocol: TCP
+      port: 80
+      targetPort: 8080
+  type: ClusterIP

@@ -1,0 +1,17 @@
+export ETCD_USER=user
+export ETCD_DB=$ETCD_DB
+export ETCD_PASSWORD=1G9jdQuVeZ
+export ETCD_LOCAL_URI="http://127.0.0.1:2379"
+export ETCD_CLUSTER_URI="etcds.demo.svc.cluster.local:5432"
+
+export POSTGRES_USER="user"
+export POSTGRES_DB=
+export POSTGRES_PASSWORD="password"
+export POSTGRES_LOCAL_URI="http://127.0.0.1:5432"
+export POSTGRES_STRING_LOCAL="postgres://user:password@localhost:5432/database?sslmode=disable"
+export POSTGRES_STRING_CLUSTER="postgres://user:password@pgsql-postgresql.demo.svc.cluster.local:5432/database?sslmode=disable"
+
+key_manager_uri:
+kafka_uri:
+batch_size:
+worker_id:

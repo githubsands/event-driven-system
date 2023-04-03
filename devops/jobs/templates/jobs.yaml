@@ -1,0 +1,86 @@
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: upload_transactions
+spec:
+  template:
+    metadata:
+      name: upload_transactions
+    spec:
+      containers:
+      - name: upload_transactions
+        image: jobs:latest
+        command: ["/usr/local/bin/jobs", "--upload_transactions"]
+        env:
+        - name: POSTGRES_DB
+          value: {{ .Values.postgres_uri }}
+        - name: POSTGRES_STRING
+          value: {{ .Values.postgres_string }}
+        - name: ETCD_DB
+          value: {{ .Values.etcd_uri }}
+      restartPolicy: Never
+---
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: upload_private_keys
+spec:
+  template:
+    metadata:
+      name: upload_private_keys
+    spec:
+      containers:
+      - name: upload_transactions
+        image: jobs:latest
+        command: ["/usr/local/bin/jobs", "--upload_privatekeys"]
+        env:
+        - name: POSTGRES_DB
+          value: {{ .Values.postgres_uri }}
+        - name: POSTGRES_STRING
+          value: {{ .Values.postgres_string }}
+        - name: ETCD_DB
+          value: {{ .Values.etcd_uri }}
+      restartPolicy: Never
+---
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: upload_private_keys
+spec:
+  template:
+    metadata:
+      name: upload_private_keys
+    spec:
+      containers:
+      - name: upload_transactions
+        image: jobs:latest
+        command: ["/usr/local/bin/jobs", "--seed_tables"]
+        env:
+        - name: POSTGRES_DB
+          value: {{ .Values.postgres_uri }}
+        - name: POSTGRES_STRING
+          value: {{ .Values.postgres_string }}
+        - name: ETCD_DB
+          value: {{ .Values.etcd_uri }}
+      restartPolicy: Never
+---
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: ignite
+spec:
+  template:
+    metadata:
+      name: ignite
+    spec:
+      containers:
+      - name: ignite
+        image: jobs:latest
+        command: ["/usr/local/bin/jobs", "--ignite"]
+        env:
+        - name: POSTGRES_DB
+          value: {{ .Values.postgres_uri }}
+        - name: POSTGRES_STRING
+          value: {{ .Values.postgres_string }}
+        - name: ETCD_DB
+          value: {{ .Values.etcd_uri }}

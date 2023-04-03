@@ -1,0 +1,50 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: io-batch-reader
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: io-batch-reader
+  template:
+    metadata:
+      labels:
+        app: io-batch-reader
+    spec:
+      containers:
+      - name: io-batch-reader
+        image: batchreader:latest
+        date: {{ .Release.Time.Seconds | quote }}
+        env:
+        - name: BATCH_SIZE
+          value: {{ .Values.batchSize | quote }}
+        - name: POSTGRES_CLUSTER_URI
+          value: {{ .Values.postgres_uri | quote }}
+        - name: KAFKA_CLUSTER_URI
+          value: {{ .Values.kafka_uri | quote }}
+        - name: POSTGRES_STRING_CLUSTER
+          value: {{ .Values.postgres_string | quote }}
+        ports:
+        - containerPort: 8080
+        resources:
+          limits:
+            cpu: 500m
+            memory: 256Mi
+          requests:
+            cpu: 250m
+            memory: 128Mi
+        imagePullPolicy: Never
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: io-batch-reader
+spec:
+  selector:
+    app: io-batch-reader
+  ports:
+    - protocol: TCP
+      port: 8080
+      targetPort: 8080
+  type: ClusterIP

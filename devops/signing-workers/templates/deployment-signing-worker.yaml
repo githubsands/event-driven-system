@@ -1,0 +1,62 @@
+{{- range $worker := .Values.workers }}
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ $worker.name }}
+  namespace: demo
+  labels:
+    app: {{ $worker.name }}
+    app.kubernetes.io/managed-by: "Helm"
+    version: {{ $.Chart.Version }}
+spec:
+  selector:
+    matchLabels:
+      app: {{ $worker.name }}
+      run: {{ $worker.name }}
+      version: {{ $.Chart.Version }}
+      signing-worker: "true"
+  template:
+    metadata:
+      labels:
+        app: {{ $worker.name }}
+        run: {{ $worker.name }}
+        version: {{ $.Chart.Version }}
+        signing-worker: "true"
+    spec:
+      containers:
+      - name: {{ $worker.name }}
+        image: signing-worker:latest-demo
+        date: {{ .Release.Time.Seconds | quote }}
+        env:
+        - name: WORKER_ID
+          value: {{ $worker.id | quote }}
+        - name: BATCH_SIZE
+          value: {{ $worker.batchSize | quote }}
+        - name: KAFKA_URI
+          value: {{ $worker.kafka_uri | quote }}
+        - name: KEY_MANAGER_URI
+          value: {{ $worker.key_manager_uri | quote }}
+        - name: IGNITE
+          value: "false"
+        ports:
+        - containerPort: 8080 # ignition port i.e localhost:8080/ignite
+        imagePullPolicy: Never
+{{- end }}
+{{- range $worker := .Values.workers }}
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: {{ $worker.name }}
+  namespace: demo
+spec:
+  selector:
+    app: {{ $worker.name }}
+    run: {{ $worker.name }}
+  ports:
+  - name: http
+    port: 8080
+    targetPort: 8080
+  type: ClusterIP
+{{- end }}
